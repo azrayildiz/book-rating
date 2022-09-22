@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'books', pathMatch: 'full' }
+  { path: '', redirectTo: 'books', pathMatch: 'full' },
+  // lazy loading
+  { path: 'books', loadChildren: () => import('./books/books.module').then(m =>m.BooksModule)}
 ];
 
 @NgModule({

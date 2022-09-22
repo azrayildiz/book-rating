@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { map, Observable, switchMap } from 'rxjs';
 import { Book } from '../shared/book';
 import { BookStoreService } from '../shared/book-store.service';
 
@@ -10,7 +11,8 @@ import { BookStoreService } from '../shared/book-store.service';
 })
 export class BookDetailsComponent implements OnInit {
 
-  book?: Book;
+  // book?: Book;
+  book$: Observable<Book>;
 
   constructor(private route: ActivatedRoute, private bs: BookStoreService) {
     // Synchroner Weg / PULL
@@ -18,16 +20,14 @@ export class BookDetailsComponent implements OnInit {
     // console.log(isbn);
 
     // Asychroner Weg / PUSH
-    this.route.paramMap.subscribe(params => {
-      const isbn = params.get('isbn');
-      console.log(isbn);
+    // TODO: Verschachtelte Subcription vermeiden
 
-      if(isbn){
-        this.bs.getSingle(isbn).subscribe(book => {
-          this.book = book;
-        });
-      }
-    })
+    // Asychroner Weg / PULL
+    this.book$ = this.route.paramMap.pipe(
+      map(params => params.get('isbn')!),
+      switchMap(isbn => this.bs.getSingle(isbn))
+      );
+
 
     // Aufgabe: Bücher abrufen
     // HTTP (BookStoreService)
