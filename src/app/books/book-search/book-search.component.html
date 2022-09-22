@@ -1,0 +1,7 @@
+<div class="form-group">
+  <input type="text" class="form-control" [formControl]="searchControl">
+
+  <ng-container *ngIf="results$ | async as books">
+    <br-book *ngFor="let b of books" [book]="b"></br-book>
+  </ng-container>
+</div>
